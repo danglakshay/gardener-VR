@@ -80,8 +80,16 @@ public class Stream : MonoBehaviour
         RaycastHit hit;
         Ray ray = new Ray(transform.position, Vector3.down);
 
+        
+
         Physics.Raycast(ray, out hit, 2.0f);
         Vector3 endPoint = hit.collider ? hit.point : ray.GetPoint(2.0f);
+
+        /*if (hit.collider != null)
+        {
+            Debug.Log("Ray hit: " + hit.collider.gameObject.name);
+        }*/
+
 
         return endPoint;
     }
