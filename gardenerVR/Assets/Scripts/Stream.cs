@@ -12,6 +12,9 @@ public class Stream : MonoBehaviour
 
     private Coroutine pourRoutine = null;
 
+    public float colliderRadius = 0.03f;
+    private SphereCollider sphereCollider;
+
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
@@ -26,6 +29,10 @@ public class Stream : MonoBehaviour
 
     public void Begin()
     {
+        /*sphereCollider = gameObject.AddComponent<SphereCollider>();
+        sphereCollider.radius = colliderRadius;
+        sphereCollider.isTrigger = true;*/
+
         StartCoroutine(UpdateParticle());
         pourRoutine = StartCoroutine(BeginPour());
     }
@@ -48,6 +55,11 @@ public class Stream : MonoBehaviour
     {
         StopCoroutine(pourRoutine);
         pourRoutine = StartCoroutine(EndPour());
+
+        /*if(sphereCollider != null)
+        {
+            Destroy(sphereCollider.gameObject);
+        }*/
     }
 
     private IEnumerator EndPour()
@@ -68,8 +80,16 @@ public class Stream : MonoBehaviour
         RaycastHit hit;
         Ray ray = new Ray(transform.position, Vector3.down);
 
+        
+
         Physics.Raycast(ray, out hit, 2.0f);
         Vector3 endPoint = hit.collider ? hit.point : ray.GetPoint(2.0f);
+
+        /*if (hit.collider != null)
+        {
+            Debug.Log("Ray hit: " + hit.collider.gameObject.name);
+        }*/
+
 
         return endPoint;
     }
@@ -102,5 +122,19 @@ public class Stream : MonoBehaviour
             yield return null;
         }
     }
+
+    /*private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Plant"))
+        {
+            ObjectSwapper swapper = other.GetComponent<ObjectSwapper>();
+            if(swapper != null)
+            {
+
+                print("Stream says: Initiating swap with " + other.ToString());
+                swapper.swapObject();
+            }
+        }
+    }*/
 
 }

@@ -44,7 +44,7 @@ public class SprinkleDetector : MonoBehaviour
 
     private void StartSprinkle()
     {
-        print("Start");
+        //print("Start");
         if (seedParticle != null)
         {
             seedParticle.Play();
@@ -55,11 +55,11 @@ public class SprinkleDetector : MonoBehaviour
     private void EndSprinkle ()
     {
 
-        print("End");
+        //print("End");
         if (seedParticle != null)
         {
             seedParticle.Stop();
-            print("Stopped seeds");
+            //print("Stopped seeds");
         }
     }
 
