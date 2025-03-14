@@ -70,3 +70,5 @@ gardenerVR/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 # Temporary auto-generated Android Assets
 gardenerVR/[Aa]ssets/[Ss]treamingAssets/aa.meta
 gardenerVR/[Aa]ssets/[Ss]treamingAssets/aa/*
+/gardenerVR/Assets/ThirdParty
+/gardenerVR/Assets/Samples
