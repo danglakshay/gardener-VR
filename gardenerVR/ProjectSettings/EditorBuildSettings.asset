@@ -12,6 +12,8 @@ EditorBuildSettings:
     path: Assets/Scenes/DemoOne.unity
     guid: 6266dbce4f10c7348a56c6f46e6910a0
   m_configObjects:
+    Unity.XR.OpenVR.Settings: {fileID: 11400000, guid: 051a1d64bb25ab84085f25e6a09380e1,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: bfd71d4ca5d62c44482ae79b1ed04aa8,
       type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: ffa62bb8ee59e0e40aa68f3a94a1074f,

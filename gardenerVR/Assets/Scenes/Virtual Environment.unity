@@ -4537,6 +4537,7 @@ GameObject:
   - component: {fileID: 469849717}
   - component: {fileID: 469849716}
   - component: {fileID: 469849715}
+  - component: {fileID: 469849721}
   m_Layer: 0
   m_Name: XR Origin (XR Rig)
   m_TagString: Untagged
@@ -4690,6 +4691,20 @@ Transform:
   - {fileID: 274908555}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 137.854, z: 0}
+--- !u!114 &469849721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 469849714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2e1bdceafb67b64ebacf8dcee42dfe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantLevel: 0
+  plantStage: 
 --- !u!4 &483459277 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4673736585398150859, guid: 31bc31c0a9fc7f0489ea5d29d58e8ebc,
