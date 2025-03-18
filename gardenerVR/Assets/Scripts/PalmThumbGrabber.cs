@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.XR.Hands;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ public class PalmThumbGrabber : MonoBehaviour
     public Transform palmTransform; // Reference to the palm of your hand
     public Transform thumbTransform; // Reference to the thumb (should be your currently tracked object)
     public Transform AttachTransform;
+    public ArduinoController arduinoController;
     
     [Header("Grab Settings")]
     public LayerMask grabbableLayer = ~0;
@@ -22,6 +24,15 @@ public class PalmThumbGrabber : MonoBehaviour
     // Cached data
     private List<Collider> touchingPalmColliders = new List<Collider>();
     private bool thumbTouchingGrabbedObject = false;
+    
+    // Servo IDs
+    private const int THUMB_SERVO = 0;
+    private const int INDEX_SERVO = 1;
+    private const int MIDDLE_SERVO = 2;
+    
+    // Servo positions
+    private const int EXTEND_POSITION = 30;
+    private const int RETRACT_POSITION = 180;
     
     void Start()
     {
@@ -87,7 +98,7 @@ public class PalmThumbGrabber : MonoBehaviour
                     if (thumbCollider.bounds.Intersects(objCollider.bounds))
                     {
                         thumbTouchingGrabbedObject = true;
-                        print("Thumb is still touching the grabbed object!");
+                        //print("Thumb is still touching the grabbed object!");
                         return;
                     }
                 }
@@ -153,69 +164,27 @@ public class PalmThumbGrabber : MonoBehaviour
         grabbedObject = rb;
         thumbTouchingGrabbedObject = true;
 
+        Quaternion originalRotation = grabbedObject.transform.rotation;
+        Vector3 initialRelativePosition = grabbedObject.transform.position - transform.position;
+
         // Parent the object to the hand
         grabbedObject.transform.SetParent(palmTransform);
         
         // Apply an offset (adjust as needed)
         grabbedObject.transform.localPosition = AttachTransform.localPosition; // Example offset
-        grabbedObject.transform.localRotation = Quaternion.Euler(0, 30, 90); // Reset rotation
+        grabbedObject.transform.localRotation = AttachTransform.localRotation;
 
         // Disable physics while held
         grabbedObject.isKinematic = true;
-
+        
+        //initiate servos
+        arduinoController.MoveServo(THUMB_SERVO, EXTEND_POSITION);
+        arduinoController.MoveServo(INDEX_SERVO, EXTEND_POSITION);
+        arduinoController.MoveServo(MIDDLE_SERVO, EXTEND_POSITION);
         Debug.Log("Object grabbed: " + grabbedObject.name);
-
-        // if (rb == null || isGrabbing) return;
-        //
-        // // Destroy any existing joint
-        // if (joint != null)
-        // {
-        //     Destroy(joint);
-        //     joint = null;
-        // }
-        //
-        // print("ATTEMPTING GRAB");
-        //
-        // isGrabbing = true;
-        // grabbedObject = rb;
-        // thumbTouchingGrabbedObject = true; // Initially true since we just grabbed it
-        //
-        // // Create a joint on the palm to "weld" the object to the palm
-        // joint = thumbTransform.gameObject.AddComponent<ConfigurableJoint>();
-        // joint.connectedBody = grabbedObject;
-        //
-        // // Configure the joint to hold the object firmly
-        // joint.xMotion = ConfigurableJointMotion.Locked;
-        // joint.yMotion = ConfigurableJointMotion.Locked;
-        // joint.zMotion = ConfigurableJointMotion.Locked;
-        // joint.angularXMotion = ConfigurableJointMotion.Locked;
-        // joint.angularYMotion = ConfigurableJointMotion.Locked;
-        // joint.angularZMotion = ConfigurableJointMotion.Locked;
-        //
-        // // Set up the joint drive
-        // JointDrive drive = new JointDrive
-        // {
-        //     positionSpring = grabStrength,
-        //     positionDamper = grabDamping,
-        //     maximumForce = Mathf.Infinity
-        // };
-        //
-        // joint.xDrive = drive;
-        // joint.yDrive = drive;
-        // joint.zDrive = drive;
-        // joint.angularXDrive = drive;
-        // joint.angularYZDrive = drive;
-        //
-        // // Enhance physics behavior while held
-        // if (grabbedObject != null)
-        // {
-        //     grabbedObject.interpolation = RigidbodyInterpolation.Interpolate;
-        //     grabbedObject.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        // }
-        //
-        // Debug.Log("Object grabbed by palm: " + grabbedObject.name);
     }
     
+    // ReSharper disable Unity.PerformanceAnalysis
     void ReleaseObject()
     {
         
@@ -229,24 +198,14 @@ public class PalmThumbGrabber : MonoBehaviour
 
         // Re-enable physics (if needed)
         grabbedObject.isKinematic = false;
-
+        
+        //Retract Servos
+        arduinoController.MoveServo(THUMB_SERVO, RETRACT_POSITION);
+        arduinoController.MoveServo(INDEX_SERVO, RETRACT_POSITION);
+        arduinoController.MoveServo(MIDDLE_SERVO, RETRACT_POSITION);
+        
         Debug.Log("Released object: " + grabbedObject.name);
         grabbedObject = null;
-        // if (!isGrabbing || !joint) return;
-        //
-        // isGrabbing = false;
-        // thumbTouchingGrabbedObject = false;
-        //
-        // // Remove the joint
-        // Destroy(joint);
-        // joint = null;
-        //
-        // // Reset the grabbed object
-        // if (grabbedObject)
-        // {
-        //     Debug.Log("Released object: " + grabbedObject.name);
-        //     grabbedObject = null;
-        // }
     }
     
     // For debugging - visualize the connection
@@ -270,8 +229,8 @@ public class PalmThumbGrabber : MonoBehaviour
         if (isGrabbing && grabbedObject != null)
         {
             // Smoothly move the bag to the hand's position and rotation
-            grabbedObject.MovePosition(Vector3.Lerp(grabbedObject.position, palmTransform.position, Time.fixedDeltaTime * 10f));
-            grabbedObject.MoveRotation(Quaternion.Slerp(grabbedObject.rotation, palmTransform.rotation, Time.fixedDeltaTime * 10f));
+            grabbedObject.MovePosition(Vector3.Lerp(grabbedObject.position, AttachTransform.position, Time.fixedDeltaTime * 30f));
+            grabbedObject.MoveRotation(Quaternion.Slerp(grabbedObject.rotation, AttachTransform.rotation, Time.fixedDeltaTime * 30f));
         }
     }
 }
